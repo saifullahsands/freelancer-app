@@ -10,12 +10,12 @@ class AuthService {
       },
     });
   }
-  async findUserById(userId){
+  async findUserById(userId) {
     return await prisma.user.findUnique({
-      where:{
-        id:parseInt(userId)
-      }
-    })
+      where: {
+        id: parseInt(userId),
+      },
+    });
   }
   async createUser(username, email, password, role, token, profileImage) {
     return await prisma.user.create({
@@ -47,10 +47,10 @@ class AuthService {
       },
     });
     if (!user) {
-      return BadRequestError(resizeBy, "invalid or expired Token");
+      throw new Error("invalid or expired Token");
     }
     if (user.veirfiedEmail) {
-      return BadRequestError(res, "email is already verified");
+      throw new Error("email is already verified");
     }
     return await prisma.user.update({
       where: {
@@ -108,6 +108,17 @@ class AuthService {
         profileImage: profileImage,
       },
     });
+  }
+
+  async updatedUserProfileFlag(userId){
+    return await prisma.user.update({
+      where:{
+        id:parseInt(userId)
+      },
+      data:{
+        isProfileCompleted:true
+      }
+    })
   }
 }
 

@@ -2,6 +2,7 @@ const freelancerDetailRouter = require("express").Router();
 const {
   authenticated,
   verifyRole,
+  checkuserProfile,
 } = require("../../middleware/auth.middleware");
 const {
   createFreelancerDetails,
@@ -9,21 +10,24 @@ const {
   updateFreelancerGig,
   updateGigCvImagePdf,
 } = require("../../controller/freelancer/freelancerDetail.controller");
+const upload = require("../../middleware/multer.middleware");
 
 freelancerDetailRouter.post(
-  "/details",
+  "/",
   authenticated,
   verifyRole("FREELANCER"),
+  checkuserProfile("verifiedEmail"),
+  upload.single("cv"),
   createFreelancerDetails
 );
 freelancerDetailRouter.patch(
-  "/details",
+  "/",
   authenticated,
   verifyRole("FREELANCER"),
   updateFreelancerDetails
 );
 freelancerDetailRouter.patch(
-  "/gig-details",
+  "/gig",
   authenticated,
   verifyRole("FREELANCER"),
   updateFreelancerGig

@@ -1,11 +1,27 @@
-const clientDetailsRouter=require("express").Router();
-const { authenticated,verifyRole}=require("../../middleware/auth.middleware");
-const { createclientDetails,updatedClientDetails } = require("../../controller/client/clientDetails.controller");
+const clientDetailsRouter = require("express").Router();
+const {
+  authenticated,
+  verifyRole,
+  checkuserProfile,
+} = require("../../middleware/auth.middleware");
+const {
+  createclientDetails,
+  updatedClientDetails,
+} = require("../../controller/client/clientDetails.controller");
 
+clientDetailsRouter.post(
+  "/",
+  authenticated,
+  verifyRole("CLIENT"),
+  checkuserProfile("verifiedEmail"),
+  createclientDetails
+);
+clientDetailsRouter.patch(
+  "/",
+  authenticated,
+  verifyRole("CLIENT"),
+  checkuserProfile("verifiedEmail"),
+  updatedClientDetails
+);
 
-
-clientDetailsRouter.post("/details",authenticated,verifyRole("CLIENT"),createclientDetails);
-clientDetailsRouter.patch("/details",authenticated,verifyRole("CLIENT"),updatedClientDetails)
-
-
-module.exports=clientDetailsRouter
+module.exports = clientDetailsRouter;

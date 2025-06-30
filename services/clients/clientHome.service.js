@@ -1,5 +1,4 @@
 const prisma = require("../../prismaClient");
-const { pagination } = require("../../utils");
 
 class clientHomeService {
   async clientHomeScreen(skip, perPageRecord) {
@@ -7,16 +6,19 @@ class clientHomeService {
       prisma.user.findMany({
         where: {
           role: "FREELANCER",
+          isProfileCompleted: true,
         },
         skip,
         take: perPageRecord,
         select: {
           username: true,
-          profileImage,
+          email: true,
+
+          profileImage: true,
           userGig: {
             select: {
-              title,
-              price,
+              title: true,
+              price: true,
             },
           },
         },
@@ -24,14 +26,60 @@ class clientHomeService {
       prisma.user.count({
         where: {
           role: "FREELANCER",
+          isProfileCompleted: true,
         },
       }),
     ]);
 
-      return {freelancer,totalCount}
+    return { freelancer, totalCount };
   }
 
+  async searchFreelancerwithGig(searchBy, skip, perPageRecord) {
+    let searchQuery = searchBy?.toLowerCase() || "";
+    
+    console.log(`search Query  :: ${searchQuery}`)
+    let where = {
+      role: "FREELANCER",
+      isProfileCompleted: true,
+      userGig: {
+        OR: [
+          {
+            title: {
+              contains: searchQuery,
+            },
+          },
+          {
+            description: {
+              contains: searchQuery,
+            },
+          },
+        ],
+      },
+    };
 
+    const [searchFreelancer, totalCount] = await Promise.all([
+      prisma.user.findMany({
+        where,
+        skip,
+        take: perPageRecord,
+        select: {
+          profileImage: true,
+          userGig: {
+            select: {
+              title: true,
+              description:true,
+              price: true,
+            },
+          },
+        },
+      }),
+      await prisma.user.count({
+        where,
+      }),
+    ]);
+    return {searchFreelancer,totalCount}
+  }
+  
 }
 
 module.exports = new clientHomeService();

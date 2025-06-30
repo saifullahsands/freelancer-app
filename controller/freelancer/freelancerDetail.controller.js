@@ -1,12 +1,14 @@
 const { BadRequestError, handleS3Upload, okResponse } = require("../../utils");
 const Freelancer_Details = require("../../services/freelancer/freelancerDetails");
+const AuthService = require("../../services/auth.service");
 
 // freelancer
 const createFreelancerDetails = async (req, res, next) => {
   try {
     const { address, city, state, bio, gender, title, description, price } =
       req.body;
-
+    const price1 = parseFloat(price);
+    console.log("Price :; ", typeof price1);
     const userId = req.user.id;
     if (!req.file) {
       return BadRequestError(res, "cvImage or pdf file is required");
@@ -18,19 +20,20 @@ const createFreelancerDetails = async (req, res, next) => {
 
     await Freelancer_Details.createFreelanceGig(
       userId,
+      title,
+      description,
+      price,
+      cvImageOrPdf
+    );
+    await Freelancer_Details.createFreelancerDetail(
+      userId,
       address,
       city,
       state,
       bio,
       gender
     );
-    await Freelancer_Details.createFreelancerDetail(
-      userId,
-      title,
-      description,
-      price,
-      cvImageOrPdf
-    );
+    await AuthService.updatedUserProfileFlag(userId);
     okResponse(res, 200, "created freelancer details successfully !!", null);
   } catch (error) {
     console.log(`error in create user details :: ${error.message}`);

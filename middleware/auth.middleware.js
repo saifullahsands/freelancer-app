@@ -1,5 +1,9 @@
 const JWT = require("jsonwebtoken");
-const { unAuthorizedError, ForbiddenError } = require("../utils");
+const {
+  unAuthorizedError,
+  ForbiddenError,
+  BadRequestError,
+} = require("../utils");
 const { TOKEN_SECRET_KEY } = require("../config/env.config");
 // const { findUserById } = require("../services/auth.service");
 const AuthService = require("../services/auth.service");
@@ -20,6 +24,7 @@ async function authenticated(req, res, next) {
     if (!user) {
       return unAuthorizedError(res, "user is not found");
     }
+
     req.user = user;
     next();
   } catch (error) {
@@ -43,7 +48,25 @@ function verifyRole(Role) {
   };
 }
 
+function checkuserProfile(checking) {
+  return (req, res, next) => {
+    try {
+      if (checking === "isProfileCompleted" && !req.user.isProfileCompleted) {
+        return BadRequestError(res, "first you completed a profile");
+      }
+      if (checking === "verifiedEmail" && !req.user.veirfiedEmail) {
+        return BadRequestError(res, "first you verified your email thank you");
+      }
+      next();
+    } catch (error) {
+      console.log(`error in checking profile :: ${error.message}`);
+      next(error);
+    }
+  };
+}
+
 module.exports = {
   authenticated,
   verifyRole,
+  checkuserProfile,
 };

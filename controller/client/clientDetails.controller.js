@@ -1,3 +1,4 @@
+const authService = require("../../services/auth.service");
 const clientDetails = require("../../services/clients/clientDetails");
 const { okResponse } = require("../../utils");
 
@@ -13,6 +14,7 @@ const createclientDetails = async (req, res, next) => {
       state,
       gender
     );
+    await authService.updatedUserProfileFlag(userId)
     okResponse(res, 200, "client details updated successfully !!", null);
   } catch (error) {
     console.log(`error in create clients details :: ${error.message}`);

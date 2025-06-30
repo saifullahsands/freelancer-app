@@ -28,6 +28,9 @@ model User {
   userDetails        User_Detail?
   profileImage       String?
   userGig            Gig?
+  isProfileCompleted Boolean      @default(false)
+  clientOrders       Order[]      @relation("ClientOrders")
+  freelancerOrders   Order[]      @relation("FreelancerOrder")
 }
 
 model User_Detail {
@@ -49,6 +52,17 @@ model Gig {
   CVImageOrPdf String?
 }
 
+model Order {
+  id           String      @id @default(uuid())
+  clientId     Int
+  freelancerId Int
+  client       User        @relation(fields: [clientId], references: [id], name: "ClientOrders")
+  freelancer   User        @relation(fields: [freelancerId], references: [id], name: "FreelancerOrder")
+  status       ORDERSTATUS @default(PENDING)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
 enum GENDERTYPE {
   FEMALE
   MALE
@@ -57,4 +71,12 @@ enum GENDERTYPE {
 enum ROLETYPE {
   FREELANCER
   CLIENT
+}
+
+enum ORDERSTATUS {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COMPLETED
+  CANCELLED
 }

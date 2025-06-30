@@ -14,17 +14,22 @@ class Freelancer_Details {
     });
   }
   async createFreelanceGig(userId, title, description, price, cvImageOrPdf) {
+    const title1 = title.toLowerCase();
+     const parsedPrice = parseFloat(price);
+  if (!price || isNaN(parsedPrice)) {
+  throw new Error( "Price must be a valid number.");
+}
     return await prisma.gig.create({
       data: {
         userId: parseInt(userId),
-        title,
+        title: title1,
         description,
-        price: parseFloat(price).toFixed(2),
+        price: parsedPrice,
         CVImageOrPdf: cvImageOrPdf,
       },
     });
   }
-  async updateFrrelancerDetail(userId,address,city,state,bio) {
+  async updateFrrelancerDetail(userId, address, city, state, bio) {
     return prisma.user_Detail.update({
       where: {
         userId: parseInt(userId),
@@ -38,7 +43,7 @@ class Freelancer_Details {
     });
   }
 
-  async updateFreelancerGig(userId,title,description,price) {
+  async updateFreelancerGig(userId, title, description, price) {
     return await prisma.gig.update({
       where: {
         userId: parseInt(userId),
@@ -51,15 +56,15 @@ class Freelancer_Details {
     });
   }
 
-  async updateCvImageOrPdf(userId,cvImageOrPdf){
+  async updateCvImageOrPdf(userId, cvImageOrPdf) {
     return await prisma.gig.update({
-      where:{
-        userId:parseInt(userId)
+      where: {
+        userId: parseInt(userId),
       },
-      data:{
-         CVImageOrPdf:cvImageOrPdf
-      }
-    })
+      data: {
+        CVImageOrPdf: cvImageOrPdf,
+      },
+    });
   }
 }
 

@@ -11,12 +11,12 @@ class clientHomeService {
         skip,
         take: perPageRecord,
         select: {
+          id: true,
           username: true,
-          email: true,
-
           profileImage: true,
           userGig: {
             select: {
+              id: true,
               title: true,
               price: true,
             },
@@ -36,8 +36,8 @@ class clientHomeService {
 
   async searchFreelancerwithGig(searchBy, skip, perPageRecord) {
     let searchQuery = searchBy?.toLowerCase() || "";
-    
-    console.log(`search Query  :: ${searchQuery}`)
+
+    console.log(`search Query  :: ${searchQuery}`);
     let where = {
       role: "FREELANCER",
       isProfileCompleted: true,
@@ -67,7 +67,7 @@ class clientHomeService {
           userGig: {
             select: {
               title: true,
-              description:true,
+              description: true,
               price: true,
             },
           },
@@ -77,9 +77,27 @@ class clientHomeService {
         where,
       }),
     ]);
-    return {searchFreelancer,totalCount}
+    return { searchFreelancer, totalCount };
   }
-  
+
+  async gettingFreelancerGig(gigId) {
+    return await prisma.gig.findFirst({
+      where: {
+        id: parseInt(gigId),
+      },
+      select: {
+        title: true,
+        category: true,
+        price: true,
+        user: {
+          select: {
+            username: true,
+            profileImage: true,
+          },
+        },
+      },
+    });
+  }
 }
 
 module.exports = new clientHomeService();

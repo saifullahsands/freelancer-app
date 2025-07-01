@@ -13,12 +13,20 @@ class Freelancer_Details {
       },
     });
   }
-  async createFreelanceGig(userId, title, description, price, cvImageOrPdf) {
+  async createFreelanceGig(
+    userId,
+    title,
+    description,
+    price,
+    cvImageOrPdf,
+    category,
+    deliveryTime
+  ) {
     const title1 = title.toLowerCase();
-     const parsedPrice = parseFloat(price);
-  if (!price || isNaN(parsedPrice)) {
-  throw new Error( "Price must be a valid number.");
-}
+    const parsedPrice = parseFloat(price);
+    if (!price || isNaN(parsedPrice)) {
+      throw new Error("Price must be a valid number.");
+    }
     return await prisma.gig.create({
       data: {
         userId: parseInt(userId),
@@ -26,6 +34,8 @@ class Freelancer_Details {
         description,
         price: parsedPrice,
         CVImageOrPdf: cvImageOrPdf,
+        category,
+        deliveryTime,
       },
     });
   }
@@ -43,29 +53,7 @@ class Freelancer_Details {
     });
   }
 
-  async updateFreelancerGig(userId, title, description, price) {
-    return await prisma.gig.update({
-      where: {
-        userId: parseInt(userId),
-      },
-      data: {
-        title,
-        description,
-        price: parseFloat(price).toFixed(2),
-      },
-    });
-  }
 
-  async updateCvImageOrPdf(userId, cvImageOrPdf) {
-    return await prisma.gig.update({
-      where: {
-        userId: parseInt(userId),
-      },
-      data: {
-        CVImageOrPdf: cvImageOrPdf,
-      },
-    });
-  }
 }
 
 module.exports = new Freelancer_Details();

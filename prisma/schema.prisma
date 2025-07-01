@@ -27,10 +27,11 @@ model User {
   role               ROLETYPE
   userDetails        User_Detail?
   profileImage       String?
-  userGig            Gig?
+  userGig            Gig[]
   isProfileCompleted Boolean      @default(false)
   clientOrders       Order[]      @relation("ClientOrders")
   freelancerOrders   Order[]      @relation("FreelancerOrder")
+  portfolio          Portfolio[]
 }
 
 model User_Detail {
@@ -44,12 +45,18 @@ model User_Detail {
 }
 
 model Gig {
-  userId       Int     @id
-  user         User    @relation(fields: [userId], references: [id])
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id])
   title        String
   description  String
   price        Float
   CVImageOrPdf String?
+  category     String?
+  deliveryTime Int?
+  order        Order[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Order {
@@ -58,9 +65,22 @@ model Order {
   freelancerId Int
   client       User        @relation(fields: [clientId], references: [id], name: "ClientOrders")
   freelancer   User        @relation(fields: [freelancerId], references: [id], name: "FreelancerOrder")
+  gigId        Int
+  gig          Gig         @relation(references: [id], fields: [gigId])
   status       ORDERSTATUS @default(PENDING)
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+}
+
+model Portfolio {
+  id           Int      @id @default(autoincrement())
+  freelancerId Int
+  freelancer   User     @relation(fields: [freelancerId], references: [id])
+  fileUrls     String?
+  title        String
+  descriptions String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 enum GENDERTYPE {

@@ -1,10 +1,12 @@
 const freelancerDetailRouter = require("./freelancerDetailRouter");
+const freelancerGigsRouter = require("./freelancerGigsRouter");
+const freelancerRouter = require("express").Router();
+const freelancerOrderRouter = require("./freelancerOrderRouter");
+const freelancerPortfolioRouter = require("./freelancerPortfolioRouter");
 
-const freelancerRouter=require("express").Router();
+freelancerRouter.use("/details", freelancerDetailRouter);
+freelancerRouter.use("/gig", freelancerGigsRouter);
+freelancerRouter.use("/order", freelancerOrderRouter);
+freelancerRouter.use("/portfolio", freelancerPortfolioRouter);
 
-
-freelancerRouter.use("/details",freelancerDetailRouter)
-
-
-
-module.exports=freelancerRouter
+module.exports = freelancerRouter;

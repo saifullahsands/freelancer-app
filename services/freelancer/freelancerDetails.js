@@ -35,7 +35,7 @@ class Freelancer_Details {
         price: parsedPrice,
         CVImageOrPdf: cvImageOrPdf,
         category,
-        deliveryTime,
+        deliveryTime: parseInt(deliveryTime),
       },
     });
   }
@@ -52,8 +52,6 @@ class Freelancer_Details {
       },
     });
   }
-
-
 }
 
 module.exports = new Freelancer_Details();

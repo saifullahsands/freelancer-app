@@ -42,12 +42,17 @@ const deletePortfolioDetails = async (req, res, next) => {
   try {
     const freelancerId = req.user.id;
     const { portfolioId } = req.body;
-    const deleteportfolio =
-      await freelancerPortfolioService.deletePortfolioDetails(
-        portfolioId,
-        freelancerId
-      );
-    okResponse(res, 200, " ", deleteportfolio);
+    const findport = await freelancerPortfolioService.findPortfolio(
+      portfolioId,
+      freelancerId
+    );
+    if (!findport) {
+      return BadRequestError(res, "you are not owner of this portfolio");
+    }
+    const deletePort = await freelancerPortfolioService.deletePortfolio(
+      portfolioId
+    );
+    okResponse(res, 200, " ", deletePort);
   } catch (error) {
     console.log(`error in delete portfolio detauls :: ${error.message}`);
     next(error);

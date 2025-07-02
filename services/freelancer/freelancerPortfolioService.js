@@ -12,13 +12,21 @@ class freelancerPortfolioService {
     });
   }
 
-  async deletePortfolioDetails(portfolioId,freelancerId) {
+  async findPortfolio(portfolioId,freelancerId) {
     return await prisma.portfolio.delete({
       where: {
         id: parseInt(portfolioId),
         freelancerId:parseInt(freelancerId)
       },
     });
+  }
+
+  async deletePortfolio(portfolioId){
+    return await prisma.portfolio.delete({
+      where:{
+        id:parseInt(portfolioId)
+      }
+    })
   }
   async getAllPortfolio(freelancerId) {
     return await prisma.portfolio.findMany({

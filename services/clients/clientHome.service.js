@@ -2,36 +2,55 @@ const prisma = require("../../prismaClient");
 
 class clientHomeService {
   async clientHomeScreen(skip, perPageRecord) {
-    const [freelancer, totalCount] = await Promise.all([
-      prisma.user.findMany({
-        where: {
-          role: "FREELANCER",
-          isProfileCompleted: true,
-        },
+    const [gigs, totalCount] = await Promise.all([
+      prisma.gig.findMany({
         skip,
         take: perPageRecord,
+        orderBy: { createdAt: "desc" },
         select: {
           id: true,
-          username: true,
-          profileImage: true,
-          userGig: {
+          title: true,
+          description: true,
+          price: true,
+          user: {
             select: {
               id: true,
-              title: true,
-              price: true,
+              username: true,
             },
           },
         },
       }),
-      prisma.user.count({
-        where: {
-          role: "FREELANCER",
-          isProfileCompleted: true,
-        },
-      }),
+      prisma.gig.count({}),
     ]);
 
-    return { freelancer, totalCount };
+    const enhancedGig = await Promise.all(
+      gigs.map(async (gig) => {
+        const [totalOrders, avgRatingResult] = await new Promise.all([
+          prisma.order.count({
+            where: {
+              gigId: parseInt(gig.id),
+            },
+          }),
+          prisma.review.aggregate({
+            _avg: {
+              rating: true,
+            },
+            where: {
+              order: {
+                gigId: parseInt(gig.id),
+              },
+            },
+          }),
+        ]);
+        return {
+          ...gig,
+          totalOrders: totalOrders,
+          averageRating: avgRatingResult._avg.rating || 0,
+        };
+      })
+    );
+
+    return { freelancer: enhancedGig, totalCount };
   }
 
   async searchFreelancerwithGig(searchBy, skip, perPageRecord) {
@@ -39,41 +58,33 @@ class clientHomeService {
 
     console.log(`search Query  :: ${searchQuery}`);
     let where = {
-      role: "FREELANCER",
-      isProfileCompleted: true,
-      userGig: {
-        OR: [
-          {
-            title: {
-              contains: searchQuery,
-            },
-          },
-          {
-            description: {
-              contains: searchQuery,
-            },
-          },
-        ],
+      title: {
+        contains: searchBy,
+      },
+      description: {
+        contains: searchBy,
       },
     };
 
     const [searchFreelancer, totalCount] = await Promise.all([
-      prisma.user.findMany({
+      prisma.gig.findMany({
         where,
         skip,
         take: perPageRecord,
         select: {
-          profileImage: true,
-          userGig: {
+          id: true,
+          title: true,
+          description: true,
+          price: true,
+          user: {
             select: {
-              title: true,
-              description: true,
-              price: true,
+              id: true,
+              username: true,
             },
           },
         },
       }),
-      await prisma.user.count({
+      await prisma.gig.count({
         where,
       }),
     ]);

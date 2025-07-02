@@ -8,7 +8,7 @@ const {
   login,
   updateProfileImage,
 } = require("../controller/auth.controller");
-const { authenticated } = require("../middleware/auth.middleware");
+const { authenticated, checkuserProfile } = require("../middleware/auth.middleware");
 const upload = require("../middleware/multer.middleware");
 const authRouter = require("express").Router();
 

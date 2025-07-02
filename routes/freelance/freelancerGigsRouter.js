@@ -2,11 +2,11 @@ const {
   authenticated,
   verifyRole,
 } = require("../../middleware/auth.middleware");
-const upload=require("../../middleware/multer.middleware")
+const upload = require("../../middleware/multer.middleware");
 const {
   deletefreelancerGig,
   updateFreelancerGig,
-  addFreelancerGig,
+  addingGigs,
 } = require("../../controller/freelancer/freelancerGigs.controller");
 
 const freelancerGigsRouter = require("express").Router();
@@ -16,20 +16,20 @@ freelancerGigsRouter.post(
   authenticated,
   verifyRole("FREELANCER"),
   upload.single("cv"),
-  addFreelancerGig
+  addingGigs
 );
 freelancerGigsRouter.patch(
   "/",
   authenticated,
   verifyRole("FREELANCER"),
-    upload.single("cv"),
+  upload.single("cv"),
   updateFreelancerGig
 );
 freelancerGigsRouter.delete(
   "/",
   authenticated,
   verifyRole("FREELANCER"),
-  
+
   deletefreelancerGig
 );
 

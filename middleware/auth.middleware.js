@@ -51,6 +51,7 @@ function verifyRole(Role) {
 function checkuserProfile(checking) {
   return (req, res, next) => {
     try {
+      console.log("verified email ",req.user.veirfiedEmail)
       if (checking === "isProfileCompleted" && !req.user.isProfileCompleted) {
         return BadRequestError(res, "first you completed a profile");
       }

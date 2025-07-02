@@ -77,6 +77,7 @@ const updateFreelancerDetails = async (req, res, next) => {
   }
 };
 
+
 module.exports = {
   updateFreelancerDetails,
   createFreelancerDetails,

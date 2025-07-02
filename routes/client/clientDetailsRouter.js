@@ -1,9 +1,5 @@
 const clientDetailsRouter = require("express").Router();
-const {
-  authenticated,
-  verifyRole,
-  checkuserProfile,
-} = require("../../middleware/auth.middleware");
+
 const {
   createclientDetails,
   updatedClientDetails,
@@ -11,16 +7,10 @@ const {
 
 clientDetailsRouter.post(
   "/",
-  authenticated,
-  verifyRole("CLIENT"),
-  checkuserProfile("verifiedEmail"),
   createclientDetails
 );
 clientDetailsRouter.patch(
   "/",
-  authenticated,
-  verifyRole("CLIENT"),
-  checkuserProfile("verifiedEmail"),
   updatedClientDetails
 );
 

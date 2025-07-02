@@ -1,7 +1,4 @@
-const {
-  authenticated,
-  verifyRole,
-} = require("../../middleware/auth.middleware");
+
 const {
   clientHomeScreen,
   searchFreelancerByGigTitleAndDescription,
@@ -11,15 +8,11 @@ const clientHomeScreenRouter = require("express").Router();
 
 clientHomeScreenRouter.get(
   "/all-freelancer",
-  authenticated,
-  verifyRole("CLIENT"),
-  clientHomeScreen
+clientHomeScreen
 );
 
 clientHomeScreenRouter.get(
   "/search-freelancer",
-  authenticated,
-  verifyRole("CLIENT"),
   searchFreelancerByGigTitleAndDescription
 );
 module.exports = clientHomeScreenRouter;

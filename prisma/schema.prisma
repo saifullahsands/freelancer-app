@@ -32,6 +32,8 @@ model User {
   clientOrders       Order[]      @relation("ClientOrders")
   freelancerOrders   Order[]      @relation("FreelancerOrder")
   portfolio          Portfolio[]
+  ClientReviews      Review[]     @relation("ReviewByClient")
+  FreelancerReviews  Review[]     @relation("ReviewFreelancer")
 }
 
 model User_Detail {
@@ -54,7 +56,7 @@ model Gig {
   CVImageOrPdf String?
   category     String?
   deliveryTime Int?
-  order        Order[]
+  orders       Order[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -70,6 +72,7 @@ model Order {
   status       ORDERSTATUS @default(PENDING)
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+  review       Review?
 }
 
 model Portfolio {
@@ -81,6 +84,24 @@ model Portfolio {
   descriptions String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+model Review {
+  id      Int     @id @default(autoincrement())
+  rating  Int
+  comment String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  OrderId String @unique
+  order   Order  @relation(references: [id], fields: [OrderId])
+
+  clientId Int
+  client   User @relation(references: [id], fields: [clientId], name: "ReviewByClient")
+
+  freelancerId Int
+  freelancer   User @relation(fields: [freelancerId], references: [id], name: "ReviewFreelancer")
 }
 
 enum GENDERTYPE {

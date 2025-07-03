@@ -1,4 +1,4 @@
-const JWT = require("jsonwebtoken");
+const JWT=require("jsonwebtoken")
 const { TOKEN_SECRET_KEY } = require("../config/env.config");
 const prisma = require("../prismaClient");
 const socketAuth = async (socket, next) => {
@@ -6,13 +6,14 @@ const socketAuth = async (socket, next) => {
     const token = socket.handshake.headers?.token;
     if (
       !token ||
-      typeof tokenHeader !== "string" ||
+      typeof token !== "string" ||
       !token.startsWith("Bearer ")
     ) {
       return next(new Error("Socket Auth Error: Token not found or malformed"));
     }
     const jwtToken = token.split(" ")[1];
     const decoded = JWT.verify(jwtToken, TOKEN_SECRET_KEY);
+  
     const user = await prisma.user.findUnique({
       where: {
         id: parseInt(decoded.id),
@@ -23,6 +24,7 @@ const socketAuth = async (socket, next) => {
     }
     socket.user = user;
     socket.userId = user.id;
+    next()
   } catch (error) {
     if (error instanceof JWT.TokenExpiredError) {
       return next(new Error("Socket Auth Error: Token expired"));
@@ -34,3 +36,6 @@ const socketAuth = async (socket, next) => {
     }
   }
 };
+
+
+module.exports={socketAuth}

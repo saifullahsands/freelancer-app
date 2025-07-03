@@ -25,7 +25,7 @@ class clientHomeService {
 
     const enhancedGig = await Promise.all(
       gigs.map(async (gig) => {
-        const [totalOrders, avgRatingResult] = await new Promise.all([
+        const [totalOrders, avgRatingResult] = await Promise.all([
           prisma.order.count({
             where: {
               gigId: parseInt(gig.id),

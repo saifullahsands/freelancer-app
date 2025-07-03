@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const rootRouter = require("./routes/rootRouter");
 const globalMiddleware = require("./middleware/globalMiddleware");
 const { createServer } = require("http");
+const  initSocket  = require("./socket");
 
 app.use(express.json());
 
@@ -25,5 +26,5 @@ app.use(globalMiddleware);
 
 const server = createServer(app);
 const io = new Server(server);
-
+require("./socket/index")(io)
 module.exports = server;

@@ -34,6 +34,8 @@ model User {
   portfolio          Portfolio[]
   ClientReviews      Review[]     @relation("ReviewByClient")
   FreelancerReviews  Review[]     @relation("ReviewFreelancer")
+  sentMessage        Message[]    @relation("SentMessages")
+  recieveMessage     Message[]    @relation("ReceivedMessages")
 }
 
 model User_Detail {
@@ -102,6 +104,24 @@ model Review {
 
   freelancerId Int
   freelancer   User @relation(fields: [freelancerId], references: [id], name: "ReviewFreelancer")
+}
+
+model Message {
+  id      Int      @id @default(autoincrement())
+  content String
+  sentAt  DateTime @default(now())
+  read    Boolean  @default(false)
+
+  senderId   Int
+  receiverId Int
+
+  sender   User @relation("SentMessages", fields: [senderId], references: [id])
+  receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id])
+
+  attachment String? // Optional: file/image URL
+
+  @@index([senderId])
+  @@index([receiverId])
 }
 
 enum GENDERTYPE {

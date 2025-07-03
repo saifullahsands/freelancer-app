@@ -10,14 +10,10 @@ const freelancerOrderRouter = require("express").Router();
 
 freelancerOrderRouter.patch(
   "/",
-  authenticated,
-  verifyRole("FREELANCER"),
   freelancerUpdateOrder
 );
 freelancerOrderRouter.get(
   "/",
-  authenticated,
-  verifyRole("FREELANCER"),
   getAllOrder
 );
 

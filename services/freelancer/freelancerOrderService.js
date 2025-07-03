@@ -5,7 +5,7 @@ class freelancerOrderServices {
     return await prisma.order.update({
       where: {
         freelancerId: parseInt(freelancerId),
-        id: parseInt(orderId),
+        id:orderId
       },
       data: {
         status: orderStatus,

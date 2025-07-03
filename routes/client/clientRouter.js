@@ -7,7 +7,7 @@ const clientDetailsRouter = require("./clientDetailsRouter");
 const clientHomeScreenRouter = require("./clientHomeScreenRouter");
 const clientRouter = require("express").Router();
 const clientOrderRouter = require("./clientOrderRouter");
-
+const clientReviewRouter=require("./clientReviewRouter")
 clientRouter.use(
   "/details",
   authenticated,
@@ -31,4 +31,11 @@ clientRouter.use(
   clientOrderRouter
 );
 
+clientRouter.use(
+  "/review",
+  authenticated,
+  verifyRole("CLIENT"),
+  checkuserProfile("isProfileCompleted"),
+  clientReviewRouter
+);
 module.exports = clientRouter;

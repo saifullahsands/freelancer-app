@@ -1,22 +1,24 @@
 const prisma = require("../prismaClient");
 class reviewService {
   async checkOrder(orderId) {
-    return await prisma.order.findMany({
+    const orders= await prisma.order.findMany({
       where: {
         id: orderId,
       },
-      include: {
-        client: true,
-        freelancer: true,
-        review: true,
-      },
+      select:{
+        clientId:true,
+        status: true,
+      id: true,
+      freelancerId: true,
+      }
     });
+    return orders[0]
   }
 
   async checkingExistingReview(orderId) {
     return await prisma.review.findUnique({
       where: {
-        id: orderId,
+        OrderId:orderId,
       },
     });
   }
@@ -27,10 +29,27 @@ class reviewService {
         freelancerId: parseInt(freelancerId),
         clientId: parseInt(clientId),
         OrderId: orderId,
-        rating,
+        rating:parseInt(rating),
         comment,
       },
     });
+  }
+
+  async getAllClientOrders(clientId){
+    return await prisma.order.findMany({
+      where:{
+        clientId:parseInt(clientId)
+      },
+      include:{
+        freelancer:{
+          select:{
+          
+            username:true,
+            
+          }
+        }
+      }
+    })
   }
 }
 
